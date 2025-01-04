@@ -39,6 +39,10 @@ android {
     }
 }
 
+dependencies {
+    implementation 'com.google.ar:core:1.47.0' // Add the ARCore library for AR functionality
+}
+
 flutter {
     source = "../.."
 }

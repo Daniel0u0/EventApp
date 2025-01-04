@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../services/event_service.dart';
+import 'event_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadEvents();
   }
 
-  // Loads event data from the service
+  // Loads events from the service
   Future<void> _loadEvents() async {
     final events = await _eventService.loadEvents();
     setState(() {
@@ -78,9 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              // Navigate to event details (to be implemented)
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Tapped on ${event.title}')),
+              // Navigate to the Event Details screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventDetailsScreen(event: event),
+                ),
               );
             },
           );
