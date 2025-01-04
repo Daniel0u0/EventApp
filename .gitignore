@@ -1,7 +1,6 @@
 # Flutter/Dart specific
 .dart_tool/
 .build/
-.meteor/
 .packages
 .pub-cache/
 .pub/
@@ -11,15 +10,22 @@
 .flutter-version
 
 # iOS specific
+ios/Pods/
 ios/Flutter/
 ios/.symlinks/
-ios/Pods/
 ios/Runner.xcworkspace/
+ios/xcuserdata/
+ios/*.xcuserstate
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
 
 # Android specific
 android/.gradle/
 android/app/build/
-*.keystore
+android/local.properties
+android/*.iml
+android/gradle/caches/
+android/gradle/wrapper/gradle-wrapper.properties
 
 # IDE specific
 .idea/
