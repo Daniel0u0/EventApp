@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import '../models/event.dart';
 import '../services/event_service.dart';
 
@@ -32,6 +33,25 @@ class _HomeScreenState extends State<HomeScreen> {
       return _events;
     }
     return _events.where((event) => event.category == _selectedCategory).toList();
+  }
+
+  // Function to save bookmarks
+  Future<void> _saveBookmark(Event event) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? bookmarks = prefs.getStringList('bookmarks') ?? [];
+
+    // Check if the event is already bookmarked
+    if (!bookmarks.contains(event.id.toString())) {
+      bookmarks.add(event.id.toString());
+      await prefs.setStringList('bookmarks', bookmarks);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${event.title} bookmarked!')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${event.title} is already bookmarked!')),
+      );
+    }
   }
 
   @override
@@ -76,7 +96,18 @@ class _HomeScreenState extends State<HomeScreen> {
               '${event.location} - ${event.date}',
               style: TextStyle(color: Colors.grey),
             ),
-            trailing: Icon(Icons.arrow_forward_ios),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.bookmark),
+                  onPressed: () {
+                    _saveBookmark(event); // Call the bookmark function
+                  },
+                ),
+                Icon(Icons.arrow_forward_ios),
+              ],
+            ),
             onTap: () {
               // Navigate to event details (to be implemented)
               ScaffoldMessenger.of(context).showSnackBar(

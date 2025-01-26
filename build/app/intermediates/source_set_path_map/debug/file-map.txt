@@ -1,0 +1,49 @@
+com.daniel0u0.eventapp-jetified-lifecycle-viewmodel-savedstate-2.7.0-0 C:\Users\user\.gradle\caches\transforms-3\03aed728b7b013fdb0ee78eeb01c4f70\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\res
+com.daniel0u0.eventapp-core-runtime-2.2.0-1 C:\Users\user\.gradle\caches\transforms-3\059cceda2ceccaee2d220c95320313d5\transformed\core-runtime-2.2.0\res
+com.daniel0u0.eventapp-coordinatorlayout-1.1.0-2 C:\Users\user\.gradle\caches\transforms-3\150d8161454a7bc5e5f17ef268cff475\transformed\coordinatorlayout-1.1.0\res
+com.daniel0u0.eventapp-jetified-savedstate-ktx-1.2.1-3 C:\Users\user\.gradle\caches\transforms-3\160bb415cf4cffd204d8a8056f28403d\transformed\jetified-savedstate-ktx-1.2.1\res
+com.daniel0u0.eventapp-jetified-lifecycle-livedata-core-ktx-2.7.0-4 C:\Users\user\.gradle\caches\transforms-3\170cd53763ba8f7adb4146db3d69b874\transformed\jetified-lifecycle-livedata-core-ktx-2.7.0\res
+com.daniel0u0.eventapp-jetified-appcompat-resources-1.6.1-5 C:\Users\user\.gradle\caches\transforms-3\1953c559c4203bcb4628c02a9d076e83\transformed\jetified-appcompat-resources-1.6.1\res
+com.daniel0u0.eventapp-jetified-emoji2-1.2.0-6 C:\Users\user\.gradle\caches\transforms-3\216541df99e21ed34450f4793b9b4a67\transformed\jetified-emoji2-1.2.0\res
+com.daniel0u0.eventapp-jetified-annotation-experimental-1.4.0-7 C:\Users\user\.gradle\caches\transforms-3\22c4fd6c3195f761ca1e30b353d07655\transformed\jetified-annotation-experimental-1.4.0\res
+com.daniel0u0.eventapp-cardview-1.0.0-8 C:\Users\user\.gradle\caches\transforms-3\28645e1826f29e3f6a52409f395aef0a\transformed\cardview-1.0.0\res
+com.daniel0u0.eventapp-jetified-datastore-core-release-9 C:\Users\user\.gradle\caches\transforms-3\2c02773e64dcf092627c2f77b5194034\transformed\jetified-datastore-core-release\res
+com.daniel0u0.eventapp-jetified-savedstate-1.2.1-10 C:\Users\user\.gradle\caches\transforms-3\2c51cff48c4133d7aa1fd8f39564f9fb\transformed\jetified-savedstate-1.2.1\res
+com.daniel0u0.eventapp-drawerlayout-1.1.1-11 C:\Users\user\.gradle\caches\transforms-3\2e168f2aa76c707567937e3eba519174\transformed\drawerlayout-1.1.1\res
+com.daniel0u0.eventapp-jetified-profileinstaller-1.3.1-12 C:\Users\user\.gradle\caches\transforms-3\3a651e584a887aa677778d47c9be7a5d\transformed\jetified-profileinstaller-1.3.1\res
+com.daniel0u0.eventapp-jetified-window-1.2.0-13 C:\Users\user\.gradle\caches\transforms-3\49ca8dca74d3fdc122073b7a5974c5d0\transformed\jetified-window-1.2.0\res
+com.daniel0u0.eventapp-jetified-datastore-release-14 C:\Users\user\.gradle\caches\transforms-3\49e598a6593494d909b800248c0a8943\transformed\jetified-datastore-release\res
+com.daniel0u0.eventapp-recyclerview-1.1.0-15 C:\Users\user\.gradle\caches\transforms-3\4c2b652f583333af9509b4d9015f1117\transformed\recyclerview-1.1.0\res
+com.daniel0u0.eventapp-jetified-core-ktx-1.13.1-16 C:\Users\user\.gradle\caches\transforms-3\50387cd88c023d005c13721cd1e42893\transformed\jetified-core-ktx-1.13.1\res
+com.daniel0u0.eventapp-jetified-datastore-preferences-release-17 C:\Users\user\.gradle\caches\transforms-3\53d78d2c23f44ed91e0d89d1580654f0\transformed\jetified-datastore-preferences-release\res
+com.daniel0u0.eventapp-jetified-window-java-1.2.0-18 C:\Users\user\.gradle\caches\transforms-3\59bb600599ffc39d52050250ec56e1ed\transformed\jetified-window-java-1.2.0\res
+com.daniel0u0.eventapp-lifecycle-livedata-core-2.7.0-19 C:\Users\user\.gradle\caches\transforms-3\65ce53a4ddfdb59a5b397e30d838cf99\transformed\lifecycle-livedata-core-2.7.0\res
+com.daniel0u0.eventapp-jetified-lifecycle-runtime-ktx-2.7.0-20 C:\Users\user\.gradle\caches\transforms-3\7403ffb4c3a8f4d891ad20508f5e43e1\transformed\jetified-lifecycle-runtime-ktx-2.7.0\res
+com.daniel0u0.eventapp-fragment-1.7.1-21 C:\Users\user\.gradle\caches\transforms-3\7799b48b7fd3b8774825c296dd579627\transformed\fragment-1.7.1\res
+com.daniel0u0.eventapp-jetified-activity-1.8.1-22 C:\Users\user\.gradle\caches\transforms-3\79ec32d8a10e17b411b21d078bbf9fd2\transformed\jetified-activity-1.8.1\res
+com.daniel0u0.eventapp-material-1.9.0-23 C:\Users\user\.gradle\caches\transforms-3\7f8a86f1a07458cd0a6bfbd14c208559\transformed\material-1.9.0\res
+com.daniel0u0.eventapp-constraintlayout-2.0.1-24 C:\Users\user\.gradle\caches\transforms-3\813dd36ee77959963a0899320176dd32\transformed\constraintlayout-2.0.1\res
+com.daniel0u0.eventapp-jetified-tracing-1.2.0-25 C:\Users\user\.gradle\caches\transforms-3\830f0e2b5814c757e69ceb8a857fc725\transformed\jetified-tracing-1.2.0\res
+com.daniel0u0.eventapp-appcompat-1.6.1-26 C:\Users\user\.gradle\caches\transforms-3\87888829041df7fa3e32d73e1bc29579\transformed\appcompat-1.6.1\res
+com.daniel0u0.eventapp-core-1.13.1-27 C:\Users\user\.gradle\caches\transforms-3\9560b4392b8a1575165d2e7541c36546\transformed\core-1.13.1\res
+com.daniel0u0.eventapp-jetified-emoji2-views-helper-1.2.0-28 C:\Users\user\.gradle\caches\transforms-3\a540abcfb61bfdd9003dc046c99e16b6\transformed\jetified-emoji2-views-helper-1.2.0\res
+com.daniel0u0.eventapp-lifecycle-viewmodel-2.7.0-29 C:\Users\user\.gradle\caches\transforms-3\ac4d71d3da5bf20d2759902ba132196e\transformed\lifecycle-viewmodel-2.7.0\res
+com.daniel0u0.eventapp-lifecycle-livedata-2.7.0-30 C:\Users\user\.gradle\caches\transforms-3\acc71736c9cd2e1ac61f7931b10b068a\transformed\lifecycle-livedata-2.7.0\res
+com.daniel0u0.eventapp-lifecycle-runtime-2.7.0-31 C:\Users\user\.gradle\caches\transforms-3\b2a4352c1156d2493282fb6c6534b9de\transformed\lifecycle-runtime-2.7.0\res
+com.daniel0u0.eventapp-jetified-core-1.0.0-32 C:\Users\user\.gradle\caches\transforms-3\c31a4bb5a15a2ee7a96dbe06c89e85f5\transformed\jetified-core-1.0.0\res
+com.daniel0u0.eventapp-jetified-viewpager2-1.0.0-33 C:\Users\user\.gradle\caches\transforms-3\c574066f1efc1151031ce8742971b5bd\transformed\jetified-viewpager2-1.0.0\res
+com.daniel0u0.eventapp-jetified-activity-ktx-1.8.1-34 C:\Users\user\.gradle\caches\transforms-3\cf5b74d7c81856a944cb2f079086128c\transformed\jetified-activity-ktx-1.8.1\res
+com.daniel0u0.eventapp-jetified-fragment-ktx-1.7.1-35 C:\Users\user\.gradle\caches\transforms-3\d03a129fe758ffb6f5eb64c786bfbc56\transformed\jetified-fragment-ktx-1.7.1\res
+com.daniel0u0.eventapp-preference-1.2.1-36 C:\Users\user\.gradle\caches\transforms-3\dba5d8a7eae23ec712ac73c4ad4a9e8b\transformed\preference-1.2.1\res
+com.daniel0u0.eventapp-jetified-lifecycle-process-2.7.0-37 C:\Users\user\.gradle\caches\transforms-3\dbde9cdc77876e4df7bbc93ff1556b43\transformed\jetified-lifecycle-process-2.7.0\res
+com.daniel0u0.eventapp-slidingpanelayout-1.2.0-38 C:\Users\user\.gradle\caches\transforms-3\dd824baf44630576608b3cf985256163\transformed\slidingpanelayout-1.2.0\res
+com.daniel0u0.eventapp-transition-1.4.1-39 C:\Users\user\.gradle\caches\transforms-3\f428d7af9ec15c5a5371fd540f85fabb\transformed\transition-1.4.1\res
+com.daniel0u0.eventapp-jetified-lifecycle-viewmodel-ktx-2.7.0-40 C:\Users\user\.gradle\caches\transforms-3\f8a3f738ce330359ebc08990aae1b9d6\transformed\jetified-lifecycle-viewmodel-ktx-2.7.0\res
+com.daniel0u0.eventapp-jetified-startup-runtime-1.1.1-41 C:\Users\user\.gradle\caches\transforms-3\fabdcf8916c57220c7a394d04ce23100\transformed\jetified-startup-runtime-1.1.1\res
+com.daniel0u0.eventapp-debug-42 C:\github files\EventApp\android\app\src\debug\res
+com.daniel0u0.eventapp-main-43 C:\github files\EventApp\android\app\src\main\res
+com.daniel0u0.eventapp-resValues-44 C:\github files\EventApp\build\app\generated\res\resValues\debug
+com.daniel0u0.eventapp-packageDebugResources-45 C:\github files\EventApp\build\app\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.daniel0u0.eventapp-packageDebugResources-46 C:\github files\EventApp\build\app\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.daniel0u0.eventapp-merged_res-47 C:\github files\EventApp\build\app\intermediates\merged_res\debug
+com.daniel0u0.eventapp-packaged_res-48 C:\github files\EventApp\build\shared_preferences_android\intermediates\packaged_res\debug

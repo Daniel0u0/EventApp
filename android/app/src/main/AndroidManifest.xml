@@ -9,9 +9,6 @@
     <!-- General Camera feature -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
-    <!-- ARCore feature -->
-    <uses-feature android:name="android.hardware.camera.ar" android:required="true" />
-
     <application
         android:label="eventapp"
         android:icon="@mipmap/ic_launcher">

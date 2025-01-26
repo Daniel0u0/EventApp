@@ -1,44 +1,75 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
     namespace = "com.daniel0u0.eventapp"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 34
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = '17'
+    }
+
+    signingConfigs {
+        debug {
+            // Optional: Customize debug signing config
+        }
+        release {
+            keyAlias 'yourKeyAlias'
+            keyPassword 'yourKeyPassword'
+            storeFile file('path/to/your/keystore.jks')
+            storePassword 'yourStorePassword'
+        }
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.daniel0u0.eventapp"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 21 // Minimum SDK version
+        targetSdk = 34 // Target SDK version
+        versionCode = flutter.versionCode // Version code from Flutter
+        versionName = flutter.versionName // Version name from Flutter
+        vectorDrawables.useSupportLibrary = true // Enable vector drawable support
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled true // Enable ProGuard for release builds
+            shrinkResources true // Enable resource shrinking
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}' // Exclude specific resources
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Path to your Flutter source
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22" // Kotlin standard library
+    implementation 'androidx.appcompat:appcompat:1.6.1' // AppCompat library
+    implementation 'androidx.core:core-ktx:1.10.1' // Core KTX library
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1' // Lifecycle runtime KTX
+    implementation 'com.google.android.material:material:1.9.0' // Material design components
+
+    // Firebase dependencies (if using Firebase)
+    implementation platform('com.google.firebase:firebase-bom:32.0.0') // Firebase BoM for managing versions
+    // Add specific Firebase libraries you need, for example:
+    // implementation 'com.google.firebase:firebase-analytics-ktx'
 }
