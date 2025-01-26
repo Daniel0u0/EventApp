@@ -21,12 +21,6 @@ android {
         debug {
             // Optional: Customize debug signing config
         }
-        release {
-            keyAlias 'yourKeyAlias'
-            keyPassword 'yourKeyPassword'
-            storeFile file('path/to/your/keystore.jks')
-            storePassword 'yourStorePassword'
-        }
     }
 
     defaultConfig {
@@ -41,12 +35,6 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-        }
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled true // Enable ProGuard for release builds
-            shrinkResources true // Enable resource shrinking
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
