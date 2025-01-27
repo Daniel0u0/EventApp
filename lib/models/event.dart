@@ -5,6 +5,7 @@ class Event {
   final String date;
   final String location;
   final String description;
+  bool isBookmarked;
 
   Event({
     required this.id,
@@ -13,6 +14,7 @@ class Event {
     required this.date,
     required this.location,
     required this.description,
+    this.isBookmarked = false,
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
