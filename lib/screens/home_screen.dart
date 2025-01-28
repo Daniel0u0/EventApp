@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import '../models/event.dart';
 import '../services/event_service.dart';
+import '../services/firestore_service.dart';
 import 'bookmarks_screen.dart'; // Import the BookmarksScreen
 import '../widgets/BookmarkWidget.dart'; // Import the EventBookmarkWidget
 import 'setting_screen.dart';
+import 'login_screen.dart'; // Import the LoginScreen
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,63 +15,74 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final EventService _eventService = EventService();
+  final FirestoreService _firestoreService = FirestoreService();
   List<Event> _events = [];
-  List<String> _bookmarkedEventIds = []; // To store bookmarked event IDs
-  String _selectedCategory = 'All';
+  List<String> _bookmarkedEventIds = [];
+  String _selectedCategory = '';
+  User? _currentUser;
 
   @override
   void initState() {
     super.initState();
+    _currentUser = FirebaseAuth.instance.currentUser; // Get the currently logged-in user
     _loadBookmarks(); // Load bookmarks first
     _loadEvents(); // Then load events
   }
 
   Future<void> _loadBookmarks() async {
-    final prefs = await SharedPreferences.getInstance();
-    _bookmarkedEventIds = prefs.getStringList('bookmarks') ?? [];
+    if (_currentUser != null) {
+      // Get bookmarks for the current user from Firestore
+      List<String> firestoreBookmarks = await _firestoreService.getBookmarks(_currentUser!.uid);
+      setState(() {
+        _bookmarkedEventIds = firestoreBookmarks;
+      });
+    }
   }
 
   Future<void> _loadEvents() async {
     final events = await _eventService.loadEvents();
     setState(() {
       _events = events.map((event) {
-        // Set the isBookmarked property based on saved bookmarks
         event.isBookmarked = _bookmarkedEventIds.contains(event.id.toString());
         return event;
       }).toList();
     });
   }
 
-  List<Event> _getFilteredEvents() {
-    if (_selectedCategory == 'All') {
-      return _events;
+  Future<void> _toggleBookmark(Event event) async {
+    if (_currentUser != null) {
+      if (!event.isBookmarked) {
+        await _firestoreService.saveBookmark(_currentUser!.uid, event.id.toString()); // Save to Firestore
+        setState(() {
+          event.isBookmarked = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${event.title} bookmarked!')),
+        );
+      } else {
+        await _firestoreService.removeBookmark(_currentUser!.uid, event.id.toString()); // Remove from Firestore
+        setState(() {
+          event.isBookmarked = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${event.title} removed from bookmarks!')),
+        );
+      }
     }
-    return _events.where((event) => event.category == _selectedCategory).toList();
   }
 
-  Future<void> _toggleBookmark(Event event) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? bookmarks = prefs.getStringList('bookmarks') ?? [];
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to LoginScreen
+    );
+  }
 
-    if (!bookmarks.contains(event.id.toString())) {
-      bookmarks.add(event.id.toString());
-      await prefs.setStringList('bookmarks', bookmarks);
-      setState(() {
-        event.isBookmarked = true; // Update the event's bookmark state
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${event.title} bookmarked!')),
-      );
-    } else {
-      bookmarks.remove(event.id.toString());
-      await prefs.setStringList('bookmarks', bookmarks);
-      setState(() {
-        event.isBookmarked = false; // Update the event's bookmark state
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${event.title} removed from bookmarks!')),
-      );
-    }
+  List<Event> _getFilteredEvents() {
+    // Implement your filtering logic based on _selectedCategory
+    // For now, return all events
+    return _events; // You can add filtering logic here if needed
   }
 
   @override
@@ -115,6 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(builder: (context) => SettingsScreen()),
                 );
               },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: _logout, // Call the logout function
             ),
             // Add more ListTile entries for other screens as needed
           ],

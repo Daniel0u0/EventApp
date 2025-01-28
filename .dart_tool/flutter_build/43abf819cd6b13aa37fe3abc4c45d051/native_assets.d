@@ -1,0 +1,1 @@
+ C:\\github\ files\\EventApp\\.dart_tool\\flutter_build\\43abf819cd6b13aa37fe3abc4c45d051\\native_assets.yaml: 

@@ -1,3 +1,20 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Add the classpath for the Google services Gradle plugin
+        classpath 'com.android.tools.build:gradle:7.0.4' // Ensure this is the latest version
+        classpath 'com.google.gms:google-services:4.4.2' // Ensure this is the latest version
+    }
+}
+
+plugins {
+    // Apply the Google services Gradle plugin
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
 allprojects {
     repositories {
         google()

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.daniel0u0.eventapp-mergeDebugResources-46:/values-v26/values-v26.xml",
+            "outputFile": "com.daniel0u0.eventapp-mergeDebugResources-58:/values-v26/values-v26.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\f4a06db1a998e213d165400b036b9fcf\\transformed\\appcompat-1.6.1\\res\\values-v26\\values-v26.xml",
