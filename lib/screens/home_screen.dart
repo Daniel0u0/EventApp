@@ -7,6 +7,7 @@ import 'bookmarks_screen.dart'; // Import the BookmarksScreen
 import '../widgets/BookmarkWidget.dart'; // Import the EventBookmarkWidget
 import 'setting_screen.dart';
 import 'login_screen.dart'; // Import the LoginScreen
+import 'event_detail_screen.dart'; // Import the EventDetailScreen
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   List<Event> _events = [];
   List<String> _bookmarkedEventIds = [];
-  String _selectedCategory = '';
   User? _currentUser;
 
   @override
@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _currentUser = FirebaseAuth.instance.currentUser; // Get the currently logged-in user
     _loadBookmarks(); // Load bookmarks first
     _loadEvents(); // Then load events
+    _listenForBookmarks(); // Listen for real-time updates
   }
 
   Future<void> _loadBookmarks() async {
@@ -35,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
       List<String> firestoreBookmarks = await _firestoreService.getBookmarks(_currentUser!.uid);
       setState(() {
         _bookmarkedEventIds = firestoreBookmarks;
+
+        // Update the isBookmarked property for each event
+        for (var event in _events) {
+          event.isBookmarked = _bookmarkedEventIds.contains(event.id.toString());
+        }
       });
     }
   }
@@ -49,25 +55,35 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _listenForBookmarks() {
+    if (_currentUser != null) {
+      _firestoreService.getBookmarksStream(_currentUser!.uid).listen((List<String> bookmarks) {
+        setState(() {
+          _bookmarkedEventIds = bookmarks;
+          // Update the isBookmarked property for each event
+          for (var event in _events) {
+            event.isBookmarked = _bookmarkedEventIds.contains(event.id.toString());
+          }
+        });
+      });
+    }
+  }
+
   Future<void> _toggleBookmark(Event event) async {
     if (_currentUser != null) {
       if (!event.isBookmarked) {
         await _firestoreService.saveBookmark(_currentUser!.uid, event.id.toString()); // Save to Firestore
-        setState(() {
-          event.isBookmarked = true;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${event.title} bookmarked!')),
         );
       } else {
         await _firestoreService.removeBookmark(_currentUser!.uid, event.id.toString()); // Remove from Firestore
-        setState(() {
-          event.isBookmarked = false;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${event.title} removed from bookmarks!')),
         );
       }
+      // Refresh the bookmarks list after toggling
+      await _loadBookmarks(); // Call this to refresh the bookmark state
     }
   }
 
@@ -83,6 +99,20 @@ class _HomeScreenState extends State<HomeScreen> {
     // Implement your filtering logic based on _selectedCategory
     // For now, return all events
     return _events; // You can add filtering logic here if needed
+  }
+
+  void _navigateToEventDetail(Event event) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventDetailScreen(
+          event: event,
+          onBookmarkToggle: (isBookmarked) {
+            _toggleBookmark(event); // Call toggle bookmark
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -134,7 +164,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text('Logout'),
               onTap: _logout, // Call the logout function
             ),
-            // Add more ListTile entries for other screens as needed
           ],
         ),
       ),
@@ -161,11 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _toggleBookmark(event); // Call toggle bookmark
               },
             ),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Tapped on ${event.title}')),
-              );
-            },
+            onTap: () => _navigateToEventDetail(event), // Navigate to event detail on tap
           );
         },
       ),

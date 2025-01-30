@@ -21,4 +21,11 @@ class FirestoreService {
     final snapshot = await _db.collection('users').doc(userId).collection('bookmarks').get();
     return snapshot.docs.map((doc) => doc['eventId'] as String).toList();
   }
+
+  // Get bookmarks from Firestore as a stream
+  Stream<List<String>> getBookmarksStream(String userId) {
+    return _db.collection('users').doc(userId).collection('bookmarks').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => doc['eventId'] as String).toList();
+    });
+  }
 }

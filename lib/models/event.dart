@@ -14,7 +14,7 @@ class Event {
     required this.date,
     required this.location,
     required this.description,
-    this.isBookmarked = false,
+    this.isBookmarked = false, // Default value for isBookmarked
   });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -25,6 +25,7 @@ class Event {
       date: json['date'],
       location: json['location'],
       description: json['description'],
+      isBookmarked: json['isBookmarked'] ?? false, // Include isBookmarked from JSON
     );
   }
 }

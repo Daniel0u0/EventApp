@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Custom response class for registration and sign-in
 class AuthResult {
@@ -10,6 +11,7 @@ class AuthResult {
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Check if the user is logged in
   Future<bool> isUserLoggedIn() async {
@@ -17,10 +19,17 @@ class AuthService {
     return user != null; // Return true if a user is logged in, false otherwise
   }
 
+  // Get current user ID
+  String? getCurrentUserId() {
+    return _auth.currentUser?.uid; // Use uid instead of email for better practice
+  }
+
   // Register a new user with email and password
-  Future<AuthResult> register(String email, String password) async {
+  Future<AuthResult> register(String email, String password, String role) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      // Store the user role in Firestore
+      await _firestore.collection('users').doc(result.user!.uid).set({'role': role});
       return AuthResult(user: result.user); // Return the newly created user
     } catch (e) {
       return AuthResult(errorMessage: _handleAuthError(e)); // Return error message if registration fails
@@ -33,7 +42,6 @@ class AuthService {
       UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return AuthResult(user: result.user); // Return the user if sign-in is successful
     } catch (e) {
-      print('Sign-in error: $e'); // Log the error for debugging
       return AuthResult(errorMessage: _handleAuthError(e)); // Return error message if sign-in fails
     }
   }
@@ -61,4 +69,16 @@ class AuthService {
     }
     return 'An unknown error occurred';
   }
+
+  // Fetch user role
+  Future<String?> getUserRole(String uid) async {
+    DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+
+    // Cast the data to Map<String, dynamic>
+    Map<String, dynamic>? data = userDoc.data() as Map<String, dynamic>?;
+
+    // Check if data is not null before accessing it
+    return data?['role'] as String?; // Safely access the 'role'
+  }
+
 }
