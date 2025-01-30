@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
+import 'admin_home_screen.dart'; // Import your AdminHomeScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -38,11 +39,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   passwordController.text,
                 );
                 if (result.user != null) {
-                  // Successfully logged in, navigate to HomeScreen
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                  // Check if the user is the admin
+                  if (result.user!.email == 'admin@gmail.com') {
+                    // Navigate to AdminHomeScreen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminHomeScreen(email: result.user!.email!),
+                      ),
+                    );
+                  } else {
+                    // Navigate to HomeScreen for regular users
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  }
                 } else {
                   // Show error message
                   setState(() {

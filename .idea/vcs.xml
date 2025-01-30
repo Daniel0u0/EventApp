@@ -2,6 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/EventApp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/EventApp" vcs="" />
   </component>
 </project>
