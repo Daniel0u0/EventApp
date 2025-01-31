@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../widgets/BookmarkWidget.dart'; // Import the EventBookmarkWidget
+import 'map_screen.dart'; // Import the MapScreen
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
@@ -40,6 +41,18 @@ class EventDetailScreen extends StatelessWidget {
             EventBookmarkWidget(
               isBookmarked: event.isBookmarked,
               onBookmarkToggle: onBookmarkToggle, // Call the callback to update the bookmark state
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(location: event.location),
+                  ),
+                );
+              },
+              child: Text('View on Map'),
             ),
           ],
         ),

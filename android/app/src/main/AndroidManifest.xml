@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Optional: for loading models from the internet -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <!-- General Camera feature -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -13,6 +15,11 @@
     <application
         android:label="eventapp"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="myapi"/> <!-- Replace with your actual API key -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
