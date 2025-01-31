@@ -1,5 +1,5 @@
 class Event {
-  final String id;
+   String id;
   final String title;
   final String category;
   final String date;
@@ -27,5 +27,17 @@ class Event {
       description: json['description'],
       isBookmarked: json['isBookmarked'] ?? false, // Include isBookmarked from JSON
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'category': category,
+      'date': date,
+      'location': location,
+      'description': description,
+      'isBookmarked': isBookmarked,
+    };
   }
 }

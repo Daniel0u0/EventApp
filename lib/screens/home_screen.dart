@@ -36,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
       List<String> firestoreBookmarks = await _firestoreService.getBookmarks(_currentUser!.uid);
       setState(() {
         _bookmarkedEventIds = firestoreBookmarks;
-
         // Update the isBookmarked property for each event
         for (var event in _events) {
           event.isBookmarked = _bookmarkedEventIds.contains(event.id.toString());
@@ -48,10 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadEvents() async {
     final events = await _eventService.loadEvents();
     setState(() {
-      _events = events.map((event) {
+      // Filter out null events
+      _events = events.where((event) => event != null).cast<Event>().toList();
+      for (var event in _events) {
         event.isBookmarked = _bookmarkedEventIds.contains(event.id.toString());
-        return event;
-      }).toList();
+      }
     });
   }
 

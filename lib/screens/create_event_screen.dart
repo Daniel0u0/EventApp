@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../services/event_service.dart';
-import '../services/user_service.dart';
 
 class CreateEventScreen extends StatefulWidget {
   @override
@@ -18,11 +17,34 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   String? _location;
   String? _description;
 
+  void _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      Event newEvent = Event(
+        id: '', // ID will be generated in EventService
+        title: _title!,
+        category: _category!,
+        date: _date!,
+        location: _location!,
+        description: _description!,
+      );
+
+      await _eventService.addEvent(newEvent);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Event created successfully!')),
+      );
+
+      // Optionally, navigate back or clear the form
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create New Event'),
+        title: Text('Create Event'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,64 +53,36 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event Title'),
+                decoration: InputDecoration(labelText: 'Title'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the event title';
+                  if (value!.isEmpty) {
+                    return 'Please enter a title';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  _title = value;
-                },
+                onSaved: (value) => _title = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event Category'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the event category';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _category = value;
-                },
+                decoration: InputDecoration(labelText: 'Category'),
+                onSaved: (value) => _category = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event Date'),
+                decoration: InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the event date';
+                  if (value!.isEmpty) {
+                    return 'Please enter a date';
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  _date = value;
-                },
+                onSaved: (value) => _date = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event Location'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the event location';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _location = value;
-                },
+                decoration: InputDecoration(labelText: 'Location'),
+                onSaved: (value) => _location = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Event Description'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the event description';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _description = value;
-                },
+                decoration: InputDecoration(labelText: 'Description'),
+                onSaved: (value) => _description = value,
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -100,35 +94,5 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         ),
       ),
     );
-  }
-
-  void _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      String? role = await UserService().getUserRole();
-      if (role == 'admin') {
-        Event newEvent = Event(
-          id: DateTime.now().millisecondsSinceEpoch.toString(), // Generate a unique ID
-          title: _title!,
-          category: _category!,
-          date: _date!,
-          location: _location!,
-          description: _description!,
-        );
-
-        await _eventService.addEvent(newEvent);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Event created successfully!')),
-        );
-
-        // Optionally, navigate back or clear the form
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('You do not have permission to create an event.')),
-        );
-      }
-    }
   }
 }

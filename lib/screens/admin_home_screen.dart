@@ -65,7 +65,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 Navigator.pop(context); // Close the drawer
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SettingsScreen()), // Navigate to AdminSettingsScreen
+                  MaterialPageRoute(builder: (context) => AdminSettingsScreen()), // Navigate to AdminSettingsScreen
                 );
               },
             ),
