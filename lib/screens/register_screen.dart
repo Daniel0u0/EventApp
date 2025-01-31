@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import User class
-import '../services/auth_service.dart'; // Ensure the path is correct
-import 'home_screen.dart'; // Import HomeScreen
+import '../services/auth_service.dart';
+import 'home_screen.dart'; // Regular user home screen
+import 'admin_home_screen.dart'; // Admin home screen
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -12,27 +12,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final AuthService _authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _roleController = TextEditingController(); // Add a controller for role input
+  final TextEditingController _passcodeController = TextEditingController(); // Controller for admin passcode
 
   void _register() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty || _roleController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter email, password, and role')));
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please enter email and password')));
       return;
     }
 
-    // Call the register method and get AuthResult
-    AuthResult result = await _authService.register(
-      _emailController.text,
-      _passwordController.text,
-      _roleController.text, // Pass the role to the register method
-    );
+    try {
+      // Check if the provided passcode is valid for admin registration
+      String role = _passcodeController.text.trim() == 'admin1' ? 'admin' : 'user';
 
-    if (result.user != null) {
-      // Registration successful, navigate to HomeScreen
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else {
-      // Handle registration error
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.errorMessage ?? 'Registration failed')));
+      AuthResult result = await _authService.register(
+        _emailController.text,
+        _passwordController.text,
+        role,
+      );
+
+      if (result.user != null) {
+        if (role == 'admin') {
+          // Navigate to AdminHomeScreen if the role is admin
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AdminHomeScreen(email: result.user!.email ?? 'Admin'),
+            ),
+          );
+        } else {
+          // Navigate to HomeScreen if the role is user
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        }
+      } else {
+        // Handle registration error
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.errorMessage ?? 'Registration failed')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Registration failed: $e')));
     }
   }
 
@@ -43,6 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
@@ -54,11 +74,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscureText: true,
             ),
             TextField(
-              controller: _roleController, // Add a text field for the user role
-              decoration: InputDecoration(labelText: 'Role (e.g., admin or user)'),
+              controller: _passcodeController,
+              decoration: InputDecoration(labelText: 'Admin Passcode (Leave blank for user)'),
+              obscureText: true, // Hide the passcode for security
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: _register, child: Text('Register')),
+            ElevatedButton(
+              onPressed: _register,
+              child: Text('Register'),
+            ),
           ],
         ),
       ),

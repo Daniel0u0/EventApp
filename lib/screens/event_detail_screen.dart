@@ -61,7 +61,10 @@ class EventDetailScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => WeatherScreen(),
+                    builder: (context) => WeatherScreen(
+                      eventLat: event.latitude, // Pass event's latitude
+                      eventLon: event.longitude, // Pass event's longitude
+                    ),
                   ),
                 );
               },

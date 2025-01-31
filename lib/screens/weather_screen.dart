@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 
 class WeatherScreen extends StatefulWidget {
+  final double eventLat; // Latitude of the event location
+  final double eventLon; // Longitude of the event location
+
+  WeatherScreen({required this.eventLat, required this.eventLon});
+
   @override
   _WeatherScreenState createState() => _WeatherScreenState();
 }
@@ -11,6 +17,36 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String? _weatherCondition; // To hold weather condition description
   String? _temperature; // To hold temperature
   String? _location; // To display location name
+
+  final Map<String, Map<String, double>> _locationCoordinates = {
+    "京士柏": {"lat": 22.307, "lon": 114.174},
+    "香港天文台": {"lat": 22.302, "lon": 114.174},
+    "黃竹坑": {"lat": 22.249, "lon": 114.167},
+    "打鼓嶺": {"lat": 22.542, "lon": 114.146},
+    "流浮山": {"lat": 22.457, "lon": 113.995},
+    "大埔": {"lat": 22.449, "lon": 114.171},
+    "沙田": {"lat": 22.382, "lon": 114.191},
+    "屯門": {"lat": 22.391, "lon": 113.977},
+    "將軍澳": {"lat": 22.308, "lon": 114.264},
+    "西貢": {"lat": 22.383, "lon": 114.277},
+    "長洲": {"lat": 22.204, "lon": 114.027},
+    "赤鱲角": {"lat": 22.315, "lon": 113.936},
+    "青衣": {"lat": 22.363, "lon": 114.104},
+    "石崗": {"lat": 22.405, "lon": 114.051},
+    "荃灣可觀": {"lat": 22.371, "lon": 114.109},
+    "荃灣城門谷": {"lat": 22.370, "lon": 114.121},
+    "香港公園": {"lat": 22.276, "lon": 114.163},
+    "筲箕灣": {"lat": 22.278, "lon": 114.234},
+    "九龍城": {"lat": 22.328, "lon": 114.190},
+    "跑馬地": {"lat": 22.271, "lon": 114.184},
+    "黃大仙": {"lat": 22.341, "lon": 114.202},
+    "赤柱": {"lat": 22.218, "lon": 114.214},
+    "觀塘": {"lat": 22.313, "lon": 114.225},
+    "深水埗": {"lat": 22.329, "lon": 114.159},
+    "啟德跑道公園": {"lat": 22.316, "lon": 114.214},
+    "元朗公園": {"lat": 22.442, "lon": 114.032},
+    "大美督": {"lat": 22.484, "lon": 114.235},
+  };
 
   @override
   void initState() {
@@ -26,25 +62,29 @@ class _WeatherScreenState extends State<WeatherScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
-      // Extract temperature for a specific location (e.g. "香港天文台" - Hong Kong Observatory)
+      // Extract temperature data
       final temperatureData = data['temperature']['data'];
-      final locationData = temperatureData.firstWhere(
-              (location) => location['place'] == '香港天文台',
-          orElse: () => null);
 
-      // Extract weather condition (based on icon)
-      final weatherIcon = data['icon'][0]; // First icon from the list
-      final weatherCondition = _mapWeatherIconToDescription(weatherIcon);
+      // Find the nearest weather location
+      final nearestLocation = _findNearestLocation(temperatureData);
 
-      setState(() {
-        _temperature = locationData != null
-            ? locationData['value'].toString()
-            : 'N/A';
-        _location = locationData != null
-            ? locationData['place']
-            : 'Unknown Location';
-        _weatherCondition = weatherCondition;
-      });
+      if (nearestLocation != null) {
+        // Extract weather condition (based on icon)
+        final weatherIcon = data['icon'][0]; // First icon from the list
+        final weatherCondition = _mapWeatherIconToDescription(weatherIcon);
+
+        setState(() {
+          _temperature = nearestLocation['value'].toString();
+          _location = nearestLocation['place'];
+          _weatherCondition = weatherCondition;
+        });
+      } else {
+        setState(() {
+          _temperature = 'N/A';
+          _location = 'Unknown Location';
+          _weatherCondition = 'N/A';
+        });
+      }
     } else {
       setState(() {
         _weatherCondition = 'Error fetching weather data';
@@ -52,6 +92,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
         _location = 'Unknown Location';
       });
     }
+  }
+
+  Map<String, dynamic>? _findNearestLocation(List<dynamic> temperatureData) {
+    double minDistance = double.infinity;
+    Map<String, dynamic>? nearestLocation;
+
+    for (var location in temperatureData) {
+      final place = location['place'];
+      final coords = _locationCoordinates[place];
+
+      if (coords != null) {
+        final distance = Geolocator.distanceBetween(
+          widget.eventLat, // Event's latitude
+          widget.eventLon, // Event's longitude
+          coords['lat']!,
+          coords['lon']!,
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestLocation = location;
+        }
+      }
+    }
+    return nearestLocation;
   }
 
   // Map weather icon to description based on the documentation
@@ -82,7 +147,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hong Kong Weather'),
+        title: Text('Event Weather'),
       ),
       body: Center(
         child: _temperature == null
@@ -91,7 +156,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Location: $_location',
+              'Nearest Weather Station: $_location',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 10),

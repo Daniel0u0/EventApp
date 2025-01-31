@@ -10,36 +10,18 @@ class AdminEventsScreen extends StatefulWidget {
 
 class _AdminEventsScreenState extends State<AdminEventsScreen> {
   final EventService _eventService = EventService();
-  List<Event> _events = [];
+  late Stream<List<Event>> _eventsStream; // Use a stream for real-time updates
 
   @override
   void initState() {
     super.initState();
-    _loadEvents();
+    // Set the events stream to listen for real-time updates from Firestore
+    _eventsStream = _eventService.getEventsStream();
   }
 
-  Future<void> _loadEvents() async {
-    try {
-      List<Event?> events = await _eventService.getEvents(); // Fetch events from the service
-      setState(() {
-        // Filter out null events
-        _events = events.where((event) => event != null).cast<Event>().toList();
-      });
-    } catch (e) {
-      print('Error loading events: $e');
-      // Handle error (e.g., show a message)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load events: $e')),
-      );
-    }
-  }
-
-  Future<void> _deleteEvent(String id, int index) async {
+  Future<void> _deleteEvent(String id) async {
     try {
       await _eventService.deleteEvent(id); // Call the delete method from EventService
-      setState(() {
-        _events.removeAt(index); // Remove the event from the UI
-      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Event deleted successfully.')),
       );
@@ -57,51 +39,60 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
       appBar: AppBar(
         title: Text('Current Events'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _events.isEmpty
-            ? Center(child: Text('No events available.'))
-            : ListView.builder(
-          itemCount: _events.length,
-          itemBuilder: (context, index) {
-            return EventTile(
-              event: _events[index],
-              onEdit: () {
-                // Navigate to EditEventScreen when the edit button is pressed
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditEventScreen(event: _events[index]),
-                  ),
-                );
-              },
-              onDelete: () async {
-                // Confirm deletion
-                bool confirm = await showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Delete Event'),
-                    content: Text('Are you sure you want to delete this event?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
-                );
+      body: StreamBuilder<List<Event>>(
+        stream: _eventsStream, // Listen to the real-time events stream
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Failed to load events: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No events available.'));
+          }
 
-                if (confirm) {
-                  await _deleteEvent(_events[index].id, index); // Delete the event if confirmed
-                }
-              },
-            );
-          },
-        ),
+          final events = snapshot.data!; // Extract events from the stream
+          return ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) {
+              return EventTile(
+                event: events[index],
+                onEdit: () {
+                  // Navigate to EditEventScreen when the edit button is pressed
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditEventScreen(event: events[index]),
+                    ),
+                  );
+                },
+                onDelete: () async {
+                  // Confirm deletion
+                  bool confirm = await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Delete Event'),
+                      content: Text('Are you sure you want to delete this event?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirm) {
+                    await _deleteEvent(events[index].id); // Delete the event if confirmed
+                  }
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

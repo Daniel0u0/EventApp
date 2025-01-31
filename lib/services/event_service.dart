@@ -1,138 +1,88 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/event.dart';
 
 class EventService {
-  List<Event> _eventsCache = []; // Cache to store events after loading
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String collectionName = 'events'; // Firestore collection name
 
-  // Load all events from the local JSON file
+  // Cache for events (optional, for performance improvement)
+  List<Event> _eventsCache = [];
+
+  // Fetch all events from Firestore
   Future<List<Event>> loadEvents() async {
     if (_eventsCache.isNotEmpty) {
       return _eventsCache; // Return cached events if already loaded
     }
 
     try {
-      final file = await _localFile; // Get the local file
-      if (await file.exists()) {
-        final data = await file.readAsString(); // Read from the local file
-        final List<dynamic> jsonResult = json.decode(data);
-        _eventsCache = jsonResult.map((json) => Event.fromJson(json)).toList();
-      } else {
-        // If the file does not exist, load from the bundled JSON file
-        final data = await rootBundle.loadString('lib/data/events.json');
-        final List<dynamic> jsonResult = json.decode(data);
-        _eventsCache = jsonResult.map((json) => Event.fromJson(json)).toList();
-        await _saveEvents(); // Save the initial events to local storage
-      }
-    } catch (e, stackTrace) {
-      print('Error loading events: $e\n$stackTrace');
-      _eventsCache = []; // Initialize with an empty list if loading fails
+      final querySnapshot = await _firestore.collection(collectionName).get();
+      _eventsCache = querySnapshot.docs
+          .map((doc) => Event.fromJson({...doc.data(), 'id': doc.id}))
+          .toList();
+    } catch (e) {
+      print('Error loading events from Firestore: $e');
+      _eventsCache = [];
     }
 
     return _eventsCache;
   }
 
-  // Method to get the local file path for saving events
-  Future<File> get _localFile async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/events.json';
-    print('Local file path: $path'); // Debug print
-    return File(path);
-  }
-
-  // Method to delete an event by its ID
-  Future<void> deleteEvent(String id) async {
-    await loadEvents(); // Load events to ensure the cache is up-to-date
-
-    // Find the index of the event with the matching ID
-    int index = _eventsCache.indexWhere((event) => event.id == id);
-
-    // Check if the index is valid
-    if (index != -1) {
-      // Remove the event with the matching ID
-      _eventsCache.removeAt(index);
-      print('Removing event with ID: $id');
-
-      // Save the updated list back to the JSON file
-      await _saveEvents();
-      print('Event with ID $id deleted successfully and saved to events.json.');
-    } else {
-      print('Event with ID $id not found.');
-    }
-  }
-
-  // After saving, you can log the contents of the file
-  Future<void> _saveEvents() async {
-    try {
-      final file = await _localFile; // Ensure this method returns the correct file path
-      String jsonString = json.encode(_eventsCache.map((e) => e.toJson()).toList());
-      await file.writeAsString(jsonString);
-      print('Events saved successfully to events.json.');
-
-      // Log the contents of the file
-      String contents = await file.readAsString();
-      print('Current contents of events.json: $contents');
-    } catch (e) {
-      print('Error saving events: $e');
-    }
-  }
-
-  // New method to get all events
-  Future<List<Event>> getEvents({bool forceReload = false}) async {
-    if (forceReload) {
-      _eventsCache.clear(); // Clear cache if forced reload
-    }
-    return await loadEvents(); // Load and return events
-  }
-
-  // Retrieve an event by its ID
-  Future<Event?> getEventById(String id) async {
-    await loadEvents();
-
-    try {
-      return _eventsCache.firstWhere((event) => event.id == id); // Compare directly with the string ID
-    } catch (e) {
-      return null; // Return null if the event is not found
-    }
-  }
-
-  // Validate event fields
-  void _validateEvent(Event event) {
-    if (event.title.isEmpty) {
-      throw Exception('Event title cannot be empty');
-    }
-    // Add more validations as needed
-  }
-
-  // Add a new event
+  // Add a new event to Firestore
   Future<void> addEvent(Event newEvent) async {
-    _validateEvent(newEvent); // Validate the new event
-    await loadEvents(); // Load existing events to ensure we have the latest data
-
-    // Check for unique ID
-    if (_eventsCache.any((event) => event.id == newEvent.id)) {
-      throw Exception('Event with ID ${newEvent.id} already exists.');
+    try {
+      // Add the event to Firestore
+      await _firestore.collection(collectionName).add(newEvent.toJson());
+      print('Event added successfully: ${newEvent.title}');
+      _eventsCache.clear(); // Clear the cache to force reload
+    } catch (e) {
+      print('Error adding event to Firestore: $e');
     }
-
-    // Add the new event to the cache
-    _eventsCache.add(newEvent);
-    await _saveEvents(); // Save the updated list back to the JSON file
   }
 
-  // Update an existing event
+  // Update an existing event in Firestore
   Future<void> updateEvent(String id, Event updatedEvent) async {
-    await loadEvents(); // Ensure events are loaded
-    int index = _eventsCache.indexWhere((event) => event.id == id);
-
-    // Check if the index is within bounds
-    if (index != -1) {
-      _validateEvent(updatedEvent);
-      _eventsCache[index] = updatedEvent; // Update the event in the cache
-      await _saveEvents(); // Save the updated list back to the JSON file
-    } else {
-      throw Exception('Event not found');
+    try {
+      // Update the event in Firestore
+      await _firestore.collection(collectionName).doc(id).update(updatedEvent.toJson());
+      print('Event updated successfully: ${updatedEvent.title}');
+      _eventsCache.clear(); // Clear the cache to force reload
+    } catch (e) {
+      print('Error updating event in Firestore: $e');
     }
+  }
+
+  // Delete an event from Firestore
+  Future<void> deleteEvent(String id) async {
+    try {
+      // Delete the event from Firestore
+      await _firestore.collection(collectionName).doc(id).delete();
+      print('Event deleted successfully: $id');
+      _eventsCache.clear(); // Clear the cache to force reload
+    } catch (e) {
+      print('Error deleting event from Firestore: $e');
+    }
+  }
+
+  // Get an event by its ID
+  Future<Event?> getEventById(String id) async {
+    try {
+      final docSnapshot = await _firestore.collection(collectionName).doc(id).get();
+      if (docSnapshot.exists) {
+        return Event.fromJson({...docSnapshot.data()!, 'id': docSnapshot.id});
+      }
+      return null;
+    } catch (e) {
+      print('Error fetching event by ID from Firestore: $e');
+      return null;
+    }
+  }
+
+  // Get a real-time stream of events (for real-time updates)
+  Stream<List<Event>> getEventsStream() {
+    return _firestore.collection(collectionName).snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        return Event.fromJson({...doc.data(), 'id': doc.id});
+      }).toList();
+    });
   }
 }
