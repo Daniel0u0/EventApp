@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../widgets/BookmarkWidget.dart'; // Import the EventBookmarkWidget
 import 'map_screen.dart'; // Import the MapScreen
+import 'weather_screen.dart'; // Import the WeatherScreen
 
 class EventDetailScreen extends StatelessWidget {
   final Event event;
@@ -53,6 +54,18 @@ class EventDetailScreen extends StatelessWidget {
                 );
               },
               child: Text('View on Map'),
+            ),
+            SizedBox(height: 20), // Add some space between buttons
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WeatherScreen(),
+                  ),
+                );
+              },
+              child: Text('Weather Info'),
             ),
           ],
         ),
