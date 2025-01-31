@@ -1,0 +1,83 @@
+# Flutter/Dart-specific files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+.macos/
+.idea/
+.vscode/
+.metadata
+
+# iOS-specific files
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/.symlinks/
+ios/Pods/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcworkspace/
+ios/DerivedData/
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj
+*.xcscheme
+*.xcsettings
+
+# Android-specific files
+android/.gradle/
+android/app/build/
+android/local.properties
+*.iml
+
+# Web-specific files
+web/.dart_tool/
+web/build/
+
+# Windows-specific files
+windows/.dart_tool/
+windows/flutter/ephemeral/
+windows/build/
+
+# Linux-specific files
+linux/.dart_tool/
+linux/flutter/ephemeral/
+linux/build/
+
+# macOS-specific files
+macos/.dart_tool/
+macos/flutter/ephemeral/
+macos/build/
+
+# Firebase
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*.lock
+*.DS_Store
+*.flutter-plugins
+*.flutter-plugins-dependencies
+*.flutter-plugins-dependencies.lock
+
+# Package-lock or yarn files
+package-lock.json
+yarn.lock
+
+# Coverage
+coverage/
