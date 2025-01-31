@@ -26,8 +26,8 @@ class EventService {
         _eventsCache = jsonResult.map((json) => Event.fromJson(json)).toList();
         await _saveEvents(); // Save the initial events to local storage
       }
-    } catch (e) {
-      print('Error loading events: $e');
+    } catch (e, stackTrace) {
+      print('Error loading events: $e\n$stackTrace');
       _eventsCache = []; // Initialize with an empty list if loading fails
     }
 
@@ -80,7 +80,10 @@ class EventService {
   }
 
   // New method to get all events
-  Future<List<Event>> getEvents() async {
+  Future<List<Event>> getEvents({bool forceReload = false}) async {
+    if (forceReload) {
+      _eventsCache.clear(); // Clear cache if forced reload
+    }
     return await loadEvents(); // Load and return events
   }
 

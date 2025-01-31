@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/event_service.dart'; // Import the EventService
 import '../models/event.dart'; // Import the Event model
+import 'edit_event_screen.dart'; // Import the EditEventScreen
 
 class AdminEventsScreen extends StatefulWidget {
   @override
@@ -32,7 +33,6 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
       );
     }
   }
-
 
   Future<void> _deleteEvent(String id, int index) async {
     try {
@@ -66,6 +66,15 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
           itemBuilder: (context, index) {
             return EventTile(
               event: _events[index],
+              onEdit: () {
+                // Navigate to EditEventScreen when the edit button is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditEventScreen(event: _events[index]),
+                  ),
+                );
+              },
               onDelete: () async {
                 // Confirm deletion
                 bool confirm = await showDialog(
@@ -101,18 +110,33 @@ class _AdminEventsScreenState extends State<AdminEventsScreen> {
 // EventTile widget
 class EventTile extends StatelessWidget {
   final Event event;
+  final VoidCallback onEdit; // Callback for edit action
   final VoidCallback onDelete;
 
-  const EventTile({Key? key, required this.event, required this.onDelete}) : super(key: key);
+  const EventTile({
+    Key? key,
+    required this.event,
+    required this.onEdit,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(event.title),
       subtitle: Text(event.date), // Assuming event.date is a String
-      trailing: IconButton(
-        icon: Icon(Icons.delete),
-        onPressed: onDelete,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: onEdit, // Call the edit callback
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: onDelete,
+          ),
+        ],
       ),
     );
   }
